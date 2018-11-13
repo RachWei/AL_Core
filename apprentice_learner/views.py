@@ -117,9 +117,21 @@ def create(http_request):
         instance = AGENTS[data['agent_type']](**args)
         agent_name = data.get('name', '')
         agent = Agent(instance=instance,
+                      agent_type=data['agent_type'],
                       name=agent_name)
+        agent.project = project
         agent.save()
-        ret_data = {'agent_id': str(agent.id)}
+        ret_data = {
+            'id': agent.id,
+            'agent_type': agent.agent_type,
+            'project': agent.project,
+            'name': agent.name,
+            'num_request': agent.num_request,
+            'num_train': agent.num_train,
+            'num_check': agent.num_check,
+            'created': agent.created,
+            'updated': agent.updated
+        }
 
     except Exception as exp:
         print("Failed to create agent", exp)
@@ -298,6 +310,8 @@ def report(http_request, agent_id):
 
     response = {
         'id': agent.id,
+        'agent_type': agent.agent_type,
+        'project': agent.project,
         'name': agent.name,
         'num_request': agent.num_request,
         'num_train': agent.num_train,
@@ -318,6 +332,29 @@ def report_by_name(http_request, agent_name):
     """
     agent = get_list_or_404(Agent, name=agent_name)[0]
     return report(http_request, agent.id)
+
+
+def list_agents(http_request):
+    """
+    A RESTful hook to list all of the current agents.
+    """
+    if http_request.method != "GET":
+        return HttpResponseNotAllowed(["GET"])
+
+    response = [{
+                'id': agent.id,
+                'agent_type': agent.agent_type,
+                'project': agent.project,
+                'name': agent.name,
+                'num_request': agent.num_request,
+                'num_train': agent.num_train,
+                'num_check': agent.num_check,
+                'created': agent.created,
+                'updated': agent.updated
+                }
+                for agent in Agent.objects.all()]
+
+    return HttpResponse(json.dumps(response))
 
 
 @csrf_exempt

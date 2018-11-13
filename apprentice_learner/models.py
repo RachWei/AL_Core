@@ -94,6 +94,7 @@ class Agent(models.Model):
     various learning mechanisms.
     """
     instance = PickledObjectField()
+    agent_type = models.CharField(max_length=50)
     # action_set = models.CharField(max_length=200, blank=False)
     # action_set = models.ForeignKey(ActionSet, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=True)

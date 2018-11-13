@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Apprentice Learner Tester</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+        <style>
+        td{
+        width:100px;
+        height:100px;
+        text-align: center;
+        border-collapse: collapse;
+        padding:0px;
+        }
+        th{
+        text-align: center;
+        font-size: 2rem;
+        }
+        .game-cell{
+        border: none;
+        width:100%;
+        height:100%;
+        text-align: center;
+        text-transform: uppercase;
+        font-size:5rem;
+        border-collapse: collapse;
+        }
+        #Cell-1-1{
+        border-right: 2px solid black;
+        border-bottom: 2px solid black;
+        }
+        #Cell-1-2{
+        border-right: 2px solid black;
+        border-left: 2px solid black;
+        border-bottom: 2px solid black;
+        }
+        #Cell-1-3{
+        border-left: 2px solid black;
+        border-bottom: 2px solid black;
+        }
+        #Cell-2-1{
+        border-right: 2px solid black;
+        border-bottom: 2px solid black;
+        border-top: 2px solid black;
+        }
+        #Cell-2-2{
+        border: 2px solid black;
+        }
+        #Cell-2-3{
+        border-left: 2px solid black;
+        border-bottom: 2px solid black;
+        border-top: 2px solid black;
+        }
+        #Cell-3-1{
+        border-right: 2px solid black;
+        border-top: 2px solid black;
+        }
+        #Cell-3-2{
+        border-right: 2px solid black;
+        border-left: 2px solid black;
+        border-top: 2px solid black;
+        }
+        #Cell-3-3{
+        border-left: 2px solid black;
+        border-top: 2px solid black;
+        }
+        pre {
+        border:1px solid grey;
+        padding: 5px;
+        margin: 5px;
+        max-height:50vh;
+        overflow-y: scroll;
+        }
+        .string { color: green; }
+        .number { color: darkorange; }
+        .boolean { color: blue; }
+        .null { color: magenta; }
+        .key { color: red; }
+        </style>
+    </head>
+    <body role="document">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h2>Agent Settings</h2>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="agent-select">Agent: </label>
+                            <select id="agent-select" class="form-control">
+                                {% for agent in agents %}
+                                    <option value="{{agent.id}}">{{agent.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                    <a href="#new-agent-settings" data-toggle="collapse">Create New Agent</a>
+                    <div class="collapse" id="new-agent-settings">
+                        <form>
+                            <div class="form-group">
+                                <label for="new-agent-name">Agent Name</label>
+                                <input class="form-control" id="new-agent-name" type="text" placeholder="Name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="new-agent-type">Agent Type</label>
+                                    <select id="new-agent-type" class="form-control">
+                                        {% for typ in types %}
+                                            <option value="{{typ}}">{{typ}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                Features</br>
+                                {% for opp in opperators %}
+                                    <label>{{opp.name}}<input id="{{opp.id}}" type="checkbox"/></label>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                Functions</br>
+                                {% for opp in opperators %}
+                                    <label>{{opp.name}}<input id="{{opp.id}}" type="checkbox"/></label>
+                                {% endfor %}
+                            </div>
+                            <button class="btn">Create</button>
+                        </form>
+                    </div>
+                    <h2>Game Interface</h2>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Col 1</th>
+                            <th>Col 2</th>
+                            <th>Col 3</th>
+                        </tr>
+                        <tr>
+                            <th>Row 1</th>
+                            <td><input id="Cell-1-1" class="game-cell" type="text"/></td>
+                            <td><input id="Cell-1-2" class="game-cell" type="text"/></td>
+                            <td><input id="Cell-1-3" class="game-cell" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <th>Row 2</th>
+                            <td><input id="Cell-2-1" class="game-cell" type="text"/></td>
+                            <td><input id="Cell-2-2" class="game-cell" type="text"/></td>
+                            <td><input id="Cell-2-3" class="game-cell" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <th>Row 3</th>
+                            <td><input id="Cell-3-1" class="game-cell" type="text"/></td>
+                            <td><input id="Cell-3-2" class="game-cell" type="text"/></td>
+                            <td><input id="Cell-3-3" class="game-cell" type="text"/></td>
+                        </tr>
+                    </table>
+                    <div>
+                        <p>
+                            Current Player: <strong><span id="player"></span></strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="col">
+                    <h2>Machine Representation</h2>
+                    <div>
+                        <strong>Last Training Instance</strong>
+                    <pre id="last-training">This will show the JSON representation of the last training instance.</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script>
+    $(function() {
+        var current_player = "X";
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+        function machine_rep_state() {
+            var ret = {};
+            $('.game-cell').each(function(index){
+                ret["?"+this.id.toString()] = {'value':$(this).val(),
+                    'row':this.id.split('-')[1],
+                    'col':this.id.split('-')[2],
+                }
+            });
+            ret["?general-state"] = {"player":current_player};
+            return ret;
+            // $('#machine-rep').html(syntaxHighlight(JSON.stringify(ret,null,4)));
+        }
+
+        function train_agent(){
+
+        }
+
+        function training_instance(row,col,reward) {
+            var ret = {};
+            ret['selection'] = 'board'
+            ret['action'] = 'move'
+            ret['inputs'] = {
+                'player':current_player,
+                'row':row,
+                'col':col
+            }
+            ret['reward'] = reward;
+            ret['state'] = machine_rep_state();
+            ret['skill_label'] = 'move'
+            ret['foci_of_attention'] =[];
+            return ret;
+        }
+
+        $(".game-cell").change(function(event){
+
+            if($(event.target).val().toUpperCase() !== current_player){
+                $(event.target).val("");
+                return;
+            }
+
+            var row = event.target.id.split('-')[1];
+            var col = event.target.id.split('-')[2];
+            var reward = true;
+            var training = training_instance(row,col,reward);
+
+            // send the training call
+
+            $("#last-training").html(syntaxHighlight(JSON.stringify(training,null,4)));
+            if(current_player === "X"){
+                current_player = "O";
+            }
+            else if (current_player ==="O"){
+                current_player = "X";
+            }
+            $("#player").text(current_player);
+        });
+        
+        $("#player").text(current_player);
+    });
+</script>
+</body>
+</html>
